@@ -24,23 +24,7 @@ def health_check() -> ResponseReturnValue:
     return flask.jsonify({"status": "OK"}), HTTPStatus.OK
 
 
-# @app.route("/echo", methods=["POST"])
-# def echo() -> ResponseReturnValue:
-#     """Echo HTTP endpoint (JSON) to act as toy example"""
-#     try:
-#         request_json = flask.request.get_json()
-#         request_args = flask.request.args
-
-#         return flask.jsonify(
-#             {"Received": {"args": request_args, "json": request_json}}
-#         ), HTTPStatus.OK
-
-#     except Exception as e:
-#         return flask.jsonify(
-#             {"error": f"Internal error: {str(e)}"}
-#         ), HTTPStatus.INTERNAL_SERVER_ERROR
-
-@app.route("wck_active", methods=["POST"])
+@app.route("/wck_active", methods=["POST"])
 def wck_active(request):
     
     agol_user = os.environ.get('agol_user')
