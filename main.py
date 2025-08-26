@@ -1,3 +1,4 @@
+import os
 from http import HTTPStatus
 
 import flask
@@ -5,6 +6,8 @@ from flask.typing import ResponseReturnValue
 from flask.wrappers import Response
 
 from utils.multiroute_context import internal_context
+import utils.wck_bq_data_api as wck_bq
+import utils.wck_agol_fs as wck_fs
 
 # This app object allows for multiple endpoints in a functions-framework app.
 app = flask.Flask("internal")
@@ -21,21 +24,40 @@ def health_check() -> ResponseReturnValue:
     return flask.jsonify({"status": "OK"}), HTTPStatus.OK
 
 
-@app.route("/echo", methods=["POST"])
-def echo() -> ResponseReturnValue:
-    """Echo HTTP endpoint (JSON) to act as toy example"""
-    try:
-        request_json = flask.request.get_json()
-        request_args = flask.request.args
+# @app.route("/echo", methods=["POST"])
+# def echo() -> ResponseReturnValue:
+#     """Echo HTTP endpoint (JSON) to act as toy example"""
+#     try:
+#         request_json = flask.request.get_json()
+#         request_args = flask.request.args
 
-        return flask.jsonify(
-            {"Received": {"args": request_args, "json": request_json}}
-        ), HTTPStatus.OK
+#         return flask.jsonify(
+#             {"Received": {"args": request_args, "json": request_json}}
+#         ), HTTPStatus.OK
 
-    except Exception as e:
-        return flask.jsonify(
-            {"error": f"Internal error: {str(e)}"}
-        ), HTTPStatus.INTERNAL_SERVER_ERROR
+#     except Exception as e:
+#         return flask.jsonify(
+#             {"error": f"Internal error: {str(e)}"}
+#         ), HTTPStatus.INTERNAL_SERVER_ERROR
+
+@app.route("wck_active", methods=["POST"])
+def wck_active(request):
+    
+    agol_user = os.environ.get('agol_user')
+    agol_pass = os.environ.get('agol_pass')
+    wck_token = os.environ.get('wck_token')
+    agol_item = os.environ.get('agol_item')
+
+
+    # Make the POST request
+    api_data = wck_bq.wck_api(wck_token)
+
+    # Working in AGOL
+    '''Upload new WCK data to AGOL'''
+    agol_update = wck_fs.wfs_agol(agol_user, agol_pass, api_data, agol_item)
+    
+    return (f"\n --- \n "
+            f"\n --- \n")
 
 
 # === MAIN ENTRY POINT ===
