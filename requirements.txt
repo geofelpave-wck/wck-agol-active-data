@@ -1,1 +1,3 @@
-functions-framework>=3.9.2
+functions-framework==3.*
+mygeotab
+datetime

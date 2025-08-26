@@ -14,6 +14,8 @@ deploy:
 	--runtime=$(PYTHON_RUNTIME) \
 	--memory=512MB \
 	--trigger-http \
+	--timeout=540s \
 	--source=. \
 	--entry-point=run
+	
 
